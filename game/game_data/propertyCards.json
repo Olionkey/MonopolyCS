@@ -1,5 +1,6 @@
-{
-    "MediterraneanAvenue": {
+[
+    {
+        "name": "MediterraneanAvenue",
         "pos": 0,
         "rent": 2,
         "1h": 10,
@@ -12,11 +13,12 @@
         "price": 60,
         "mortage": 30,
         "color": "#551a8b",
-        "amount": 2,
+        "amountInGroup": 2,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "BalticAvenue": {
+    {
+        "name": "BalticAvenue",
         "pos": 1,
         "rent": 4,
         "1h": 20,
@@ -29,11 +31,12 @@
         "price": 60,
         "mortage": 30,
         "color": "#551a8b",
-        "amount": 2,
+        "amountInGroup": 2,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "ReadingRailroad": {
+    {
+        "name": "ReadingRailroad",
         "pos": 2,
         "rent": 25,
         "2RR": 50,
@@ -44,7 +47,8 @@
         "color": "#ffffff",
         "isMortgaged": false
     },
-    "OrientalAvenue": {
+    {
+        "name": "OrientalAvenue",
         "pos": 3,
         "rent": 6,
         "1h": 30,
@@ -57,11 +61,12 @@
         "price": 100,
         "mortage": 50,
         "color": "#add8e6",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "VermontAvenue": {
+    {
+        "name": "VermontAvenue",
         "pos": 4,
         "rent": 6,
         "1h": 30,
@@ -74,11 +79,11 @@
         "price": 100,
         "mortage": 50,
         "color": "#add8e6",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "ConnecticutAvenue": {
+    {   "name": "ConnecticutAvenue",
         "pos": 5,
         "rent": 8,
         "1h": 40,
@@ -91,11 +96,11 @@
         "price": 120,
         "mortage": 60,
         "color": "#add8e6",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "St.CharlesPlace": {
+    {   "name": "St.CharlesPlace",
         "pos": 6,
         "rent": 10,
         "1h": 50,
@@ -108,18 +113,18 @@
         "price": 140,
         "mortage": 70,
         "color": "#993366",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "EletricCompany": {
+    {   "name": "EletricCompany",
         "pos": 7,
         "price": 150,
         "mortage": 75,
         "color": "#ffffff",
         "isMortgaged": false
     },
-    "StatesAvenue": {
+    {   "name": "StatesAvenue",
         "pos": 8,
         "rent": 10,
         "1h": 50,
@@ -132,11 +137,11 @@
         "price": 140,
         "mortage": 70,
         "color": "#993366",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "VirginiaAvenue": {
+    {   "name": "VirginiaAvenue",
         "pos": 9,
         "rent": 12,
         "1h": 60,
@@ -149,11 +154,11 @@
         "price": 160,
         "mortage": 80,
         "color": "#993366",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "PennsylvaniaRailroad": {
+    {   "name": "PennsylvaniaRailroad",
         "pos": 10,
         "rent": 25,
         "2RR": 50,
@@ -164,7 +169,7 @@
         "color": "#ffffff",
         "isMortgaged": false
     },
-    "St.JamesPlace": {
+    {   "name": "St.JamesPlace",
         "pos": 11,
         "rent": 14,
         "1h": 70,
@@ -177,11 +182,11 @@
         "price": 180,
         "mortage": 90,
         "color": "#ffc031",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "TennesseeAvenue": {
+    {   "name": "TennesseeAvenue",
         "pos": 12,
         "rent": 14,
         "1h": 70,
@@ -194,11 +199,11 @@
         "price": 180,
         "mortage": 90,
         "color": "#ffc031",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "NewYorkAvenue": {
+    {   "name": "NewYorkAvenue",
         "pos": 13,
         "rent": 16,
         "1h": 80,
@@ -211,11 +216,11 @@
         "price": 180,
         "mortage": 100,
         "color": "#ffc031",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "KentuckyAvenue": {
+    {   "name": "KentuckyAvenue",
         "pos": 14,
         "rent": 18,
         "1h": 90,
@@ -228,11 +233,11 @@
         "price": 220,
         "mortage": 110,
         "color": "#ff1919",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "IndianaAvenue": {
+    {   "name": "IndianaAvenue",
         "pos": 15,
         "rent": 18,
         "1h": 90,
@@ -245,11 +250,11 @@
         "price": 220,
         "mortage": 110,
         "color": "#ff1919",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "IllinoisAvenue": {
+    {   "name": "IllinoisAvenue",
         "pos": 16,
         "rent": 18,
         "1h": 90,
@@ -262,11 +267,11 @@
         "price": 220,
         "mortage": 110,
         "color": "#ff1919",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "B&ORailroad": {
+    {   "name": "B&ORailroad",
         "pos": 17,
         "rent": 25,
         "2RR": 50,
@@ -277,7 +282,7 @@
         "color": "#ffffff",
         "isMortgaged": false
     },
-    "AtlanticAvenue": {
+    {   "name": "AtlanticAvenue",
         "pos": 18,
         "rent": 22,
         "1h": 110,
@@ -290,18 +295,18 @@
         "price": 260,
         "mortage": 130,
         "color": "#ffff33",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "WaterWorks":{
+    {   "name": "WaterWorks",
         "pos": 19,
         "price": 150,
         "mortgage": 75,
         "color": "#ffffff",
         "isMortgaged": false
     },
-    "VentorAvenue": {
+    {   "name": "VentorAvenue",
         "pos": 20,
         "rent": 22,
         "1h": 110,
@@ -314,11 +319,11 @@
         "price": 260,
         "mortage": 130,
         "color": "#ff1919",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "MarvinGardens": {
+    {   "name": "MarvinGardens",
         "pos": 21,
         "rent": 24,
         "1h": 120,
@@ -331,10 +336,10 @@
         "price": 280,
         "mortage": 140,
         "color": "#ff1919",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0
     },
-    "PacificAvenue": {
+    {   "name": "PacificAvenue",
         "pos": 22,
         "rent": 26,
         "1h": 130,
@@ -347,11 +352,11 @@
         "price": 300,
         "mortage": 150,
         "color": "#268026",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "NorthCarolinaAvenue": {
+    {   "name": "NorthCarolinaAvenue",
         "pos": 23,
         "rent": 26,
         "1h": 130,
@@ -364,11 +369,11 @@
         "price": 300,
         "mortage": 150,
         "color": "#268026",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "PennsylvaniaAvenue": {
+    {   "name": "PennsylvaniaAvenue",
         "pos": 24,
         "rent": 28,
         "1h": 150,
@@ -381,11 +386,11 @@
         "price": 320,
         "mortage": 160,
         "color": "#268026",
-        "amount": 3,
+        "amountInGroup": 3,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "ShortLineRailroad": {
+    {   "name": "ShortLineRailroad",
         "pos": 25,
         "rent": 25,
         "2RR": 50,
@@ -396,7 +401,7 @@
         "color": "#ffffff",
         "isMortgaged": false
     },
-    "ParkPlace": {
+    {   "name": "ParkPlace",
         "pos": 26,
         "rent": 35,
         "1h": 175,
@@ -409,11 +414,11 @@
         "price": 350,
         "mortage": 175,
         "color": "#007bc6",
-        "amount": 2,
+        "amountInGroup": 2,
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    "Boardwalk": {
+    {   "name": "Boardwalk",
         "pos": 27,
         "rent": 50,
         "1h": 200,
@@ -426,8 +431,8 @@
         "price": 350,
         "mortage": 400,
         "color": "#007bc6",
-        "amount": 2,
+        "amountInGroup": 2,
         "buildingAmount": 0,
         "isMortgaged": false
     }
-}
+]
