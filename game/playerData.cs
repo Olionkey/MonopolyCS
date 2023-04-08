@@ -322,20 +322,20 @@ namespace playerData {
                 thrwo new Exception ( " You do not own all properties in the color group." );
             }
         } 
-private bool OwnsAllColorGroup(string color, List<PropertyData> playerProperties)
-{
-    int ownedProps = playerProperties.Count(p => p.Color == color);
+        private bool OwnsAllColorGroup(string color, List<PropertyData> playerProperties)
+        {
+            int ownedProps = playerProperties.Count(p => p.Color == color);
 
-    // Get the number of cards in the color group from the first property card of that color
-    var colorGroupProperty = propertyCards.FirstOrDefault(pc => pc.Color == color);
-    if (colorGroupProperty == null)
-    {
-        throw new Exception($"Invalid color group: {color}");
-    }
+            // Get the number of cards in the color group from the first property card of that color
+            var colorGroupProperty = propertyCards.FirstOrDefault(pc => pc.Color == color);
+            if (colorGroupProperty == null)
+            {
+                throw new Exception($"Invalid color group: {color}");
+            }
 
-    // Compare the owned properties count to the amount of properties in the color group
-    return ownedProps == colorGroupProperty.Amount;
-}
+            // Compare the owned properties count to the amount of properties in the color group
+            return ownedProps == colorGroupProperty.Amount;
+        }
     }
 
 }
