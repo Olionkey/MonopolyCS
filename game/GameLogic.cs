@@ -1,14 +1,14 @@
-using PlayerObContext;
+using PlayerDbContext;
 
 namespace GameLogic
 {
     public class GameLogic
     {
         // It's only purpose is to manage the connection to the database and providng the necessary methods
-        private readonly playerObContext _dbContext;
+        private readonly playerDbContext _dbContext;
         private Dictionary<string, PropertyCard> _propertyCards;
 
-        public GameLogic(playerObContext dbContext)
+        public GameLogic(playerDbContext dbContext)
         {
             _dbContext = dbContext;
             loadPropertyCards();
