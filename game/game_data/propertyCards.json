@@ -36,18 +36,6 @@
         "isMortgaged": false
     },
     {
-        "name": "ReadingRailroad",
-        "pos": 2,
-        "rent": 25,
-        "2RR": 50,
-        "3RR": 100,
-        "4RR": 200,
-        "price": 200,
-        "mortage": 100,
-        "color": "#ffffff",
-        "isMortgaged": false
-    },
-    {
         "name": "OrientalAvenue",
         "pos": 3,
         "rent": 6,
@@ -117,13 +105,6 @@
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    {   "name": "EletricCompany",
-        "pos": 7,
-        "price": 150,
-        "mortage": 75,
-        "color": "#ffffff",
-        "isMortgaged": false
-    },
     {   "name": "StatesAvenue",
         "pos": 8,
         "rent": 10,
@@ -156,17 +137,6 @@
         "color": "#993366",
         "amountInGroup": 3,
         "buildingAmount": 0,
-        "isMortgaged": false
-    },
-    {   "name": "PennsylvaniaRailroad",
-        "pos": 10,
-        "rent": 25,
-        "2RR": 50,
-        "3RR": 100,
-        "4RR": 200,
-        "price": 200,
-        "mortage": 100,
-        "color": "#ffffff",
         "isMortgaged": false
     },
     {   "name": "St.JamesPlace",
@@ -271,17 +241,7 @@
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    {   "name": "B&ORailroad",
-        "pos": 17,
-        "rent": 25,
-        "2RR": 50,
-        "3RR": 100,
-        "4RR": 200,
-        "price": 200,
-        "mortage": 100,
-        "color": "#ffffff",
-        "isMortgaged": false
-    },
+
     {   "name": "AtlanticAvenue",
         "pos": 18,
         "rent": 22,
@@ -299,13 +259,7 @@
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    {   "name": "WaterWorks",
-        "pos": 19,
-        "price": 150,
-        "mortgage": 75,
-        "color": "#ffffff",
-        "isMortgaged": false
-    },
+
     {   "name": "VentorAvenue",
         "pos": 20,
         "rent": 22,
@@ -390,17 +344,7 @@
         "buildingAmount": 0,
         "isMortgaged": false
     },
-    {   "name": "ShortLineRailroad",
-        "pos": 25,
-        "rent": 25,
-        "2RR": 50,
-        "3RR": 100,
-        "4RR": 200,
-        "price": 200,
-        "mortage": 100,
-        "color": "#ffffff",
-        "isMortgaged": false
-    },
+
     {   "name": "ParkPlace",
         "pos": 26,
         "rent": 35,
