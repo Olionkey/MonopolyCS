@@ -64,7 +64,7 @@ namespace playerData {
         {
             var jsonContent = File.ReadAllText("./game_data/propertyCards.json");
             var propertyCards = JsonConvert.DeserializeObject<Dictionary<string, PropetyCard>>(jsonContent);
-            return propertyCards
+            return propertyCards;
         }
     }
 
@@ -82,9 +82,9 @@ namespace playerData {
         public async Task createPlayer ( SocketMessage message, string gameID ) {
 
             var PlayerData = new PlayerData {
-                User: message.Author.Id.ToString(),
-                Guild: (message.Channel as SocketGuildChannel)?.Guild.Id.ToString(), // tries to acces the guild id from SocketGuildChannel, if it can't then it returns as null
-                PlayerGameData = new PlayerGameData {
+                user = message.Author.Id.ToString(),
+                guild = (message.Channel as SocketGuildChannel)?.Guild.Id.ToString(), // tries to acces the guild id from SocketGuildChannel, if it can't then it returns as null
+                playerGameData = new PlayerGameData {
                     properties      = new List<property>(),
                     balance         = 1500,
                     chacneCard      = new List<string>(),
@@ -102,7 +102,7 @@ namespace playerData {
 
         public void loadPropertyCards(){
             string propertyCardsPath = "./game_data/propertyCards.json"; 
-            propertyCards = propertyClassHelper.loadPropertyCards(propertyCardsPath)
+            propertyCards = propertyClassHelper.loadPropertyCards(propertyCardsPath);
         }
 
         public async Task<bool> setPlayerToJail ( string userID, string gameID ) {
@@ -114,7 +114,7 @@ namespace playerData {
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
-            return false;;
+            return false;
         }
 
         public async Task<bool> removePlayerFromJail ( string userID, string gameID ) {
@@ -149,7 +149,7 @@ namespace playerData {
         }
 
         public async Task<bool> removePlayerProperty ( string userID, string gameID, string propertyName ) {
-            var player = await _dbContext.Players.FirstOrDefaultAsync( p => p.userID == userID && p.gameID)
+            var player = await _dbContext.Players.FirstOrDefaultAsync( p => p.userID == userID && p.gameID);
 
             if ( player != null) {
                 player.playerGameData.properties.RemoveAll( propertyCards[propertyName] );
@@ -162,7 +162,7 @@ namespace playerData {
         // right now this just finds who ever owns a property if there is someone that does own it
         public async Task<PlayerData> findPropertyOwner ( string gameID, string propertyName ) {
             return await _dbContext.players
-                    .FirstOrDefaultAsync ( p => p.gameID == gameID && p.playerGameData.properties.Any( property => property.name == propertyName))
+                    .FirstOrDefaultAsync ( p => p.gameID == gameID && p.playerGameData.properties.Any( property => property.name == propertyName));
         }
 
         public async Task<PlayerData> movePlayer ( SocketMessage message, string gameID, int move) {
@@ -192,10 +192,10 @@ namespace playerData {
                     int propertyIndex = propertyCards.FindIndex( card => card.name == property );
 
                     if ( propertyIndex != -1 && propertyCards[propertyIndex].pos == movePostion )
-                        return ( currentPlayer, propertyIndex )
+                        return ( currentPlayer, propertyIndex );
                 }
             }
-            return (null, -1)
+            return (null, -1);
         }
 
         public async Task<PlayerData> addSnakeEyeCount ( SocketMessage message, string gameID) {
@@ -238,7 +238,7 @@ namespace playerData {
             if ( player != null ) {
                 int newBalance = player.playerGameData.balance - balance;
                 if ( newBalance < 0 ) {
-                    return ( player, newBalance )
+                    return ( player, newBalance );
                 } 
 
                 player.playerGameData.balance = newBalance;
@@ -253,7 +253,7 @@ namespace playerData {
         }
 
         // Originally thought of letting the user return specific data regarding their data IE property, mortgaged, buildings. We should just show it all when they ask.
-        public async Task<PlayerData properties> getPlayerInfo ( Socketmessage message, string gameID) {
+        public async Task<List<Property>> getPlayerInfo( SocketMessage message, string gameID ) {
             var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.User == message.Author.Id.ToString() && p.GameID == gameID);
             var playerData = player?.PlayerGameData;
             return playerData?.Properties;
@@ -279,7 +279,7 @@ namespace playerData {
             if ( ownsAllColorGroup ( colorGroup, playerData.properties ) ) {
                 int buildingCost = houseCost * amountsOfBuildings;
 
-                if ( playerData.balance => buildingsCost ) {
+                if ( playerData.balance >= buildingsCost ) {
                     while ( amountsOfBuildings > 0 ) {
                         int minBuildings = playerData.properties.Where ( p => p.color == colorGroup ).Min( p => p.buildingAmount );
 
@@ -288,23 +288,23 @@ namespace playerData {
 
                             if ( property.color == colorGroup && propety.amountsOfBuildings == minBuildings && --amountsOfBuildings > 0){
                                 updatedProperties.Add( new property {
-                                    name = property.name
-                                    pos = property.pos
-                                    baseRent = property.baseRent
-                                    oneHouse = property.oneH
-                                    twoHouse = property.twoH
-                                    threeHouse = property.threeH
-                                    fourHouse = property.fourH
-                                    hotel = property.hotel
-                                    houseCost = property.houseCost
-                                    hotelCost = property.hotelCost
-                                    price = property.cost
-                                    mortage = property.mortage
-                                    color = property.color
-                                    amountInGroup = property.amountInGroup
-                                    buildingAmount = property.buildingAmount
+                                    name = property.name,
+                                    pos = property.pos,
+                                    baseRent = property.baseRent,
+                                    oneHouse = property.oneH,
+                                    twoHouse = property.twoH,
+                                    threeHouse = property.threeH,
+                                    fourHouse = property.fourH,
+                                    hotel = property.hotel,
+                                    houseCost = property.houseCost,
+                                    hotelCost = property.hotelCost,
+                                    price = property.cost,
+                                    mortage = property.mortage,
+                                    color = property.color,
+                                    amountInGroup = property.amountInGroup,
+                                    buildingAmount = property.buildingAmount,
                                     isMortgaged = property.isMortgaged
-                                })
+                                });
                             } else {
                                 updatedProperties.Add( proprety );
                             }
@@ -319,7 +319,7 @@ namespace playerData {
                     // TODO: Write logic telling the player how many they could afford
                 }
             } else {
-                thrwo new Exception ( " You do not own all properties in the color group." );
+                throw new Exception ( " You do not own all properties in the color group." );
             }
         } 
         private bool OwnsAllColorGroup(string color, List<PropertyData> playerProperties)
