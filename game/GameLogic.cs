@@ -237,61 +237,56 @@ namespace GameLogic
             int houseCout = propertyCard.houseCost;
             int hotelCost = propertyCard.hotelCost;
 
-            if (ownsAllColorGroup(colorGroup, playerData.properties))
-            {
-                int buildingCost = houseCost * amountsOfBuildings;
-
-                if (playerData.balance >= buildingsCost ) {
-                    while (amountsOfBuildings > 0)
-                    {
-                        int minBuildings = playerData.properties.Where(p => p.color == colorGroup).Min(p => p.buildingAmount);
-
-                        List<Property> updatedProperties = new List<Property>();
-                        foreach (var property in playerData.properties)
-                        {
-
-                            if (property.color == colorGroup && propety.amountsOfBuildings == minBuildings && --amountsOfBuildings > 0)
-                            {
-                                updatedProperties.Add(new property
-                                {
-                                    name = property.name,
-                                        pos = property.pos,
-                                        baseRent = property.baseRent,
-                                        oneHouse = property.oneH,
-                                        twoHouse = property.twoH,
-                                        threeHouse = property.threeH,
-                                        fourHouse = property.fourH,
-                                        hotel = property.hotel,
-                                        houseCost = property.houseCost,
-                                        hotelCost = property.hotelCost,
-                                        price = property.cost,
-                                        mortage = property.mortage,
-                                        color = property.color,
-                                        amountInGroup = property.amountInGroup,
-                                        buildingAmount = property.buildingAmount,
-                                        isMortgaged = property.isMortgaged
-                                });
-                            }
-                            else
-                            {
-                                updatedProperties.Add(proprety);
-                            }
-                        }
-
-                        playerData.properties = updatedProperties;
-                        playerData.balance = buildingCost;
-
-                        await _dbContext.SaveChangesAsync();
-                    }
-                } 
-                else
-                {
-                // TODO: Write logic telling the player how many they could afford
-                }
-            }
-            else
-            {
+            if (!ownsAllColorGroup(colorGroup, playerData.properties ))
                 throw new Exception(" You do not own all properties in the color group.");
+                
+            int buildingCost = houseCost * amountsOfBuildings;
+
+            if ( !(playerData.balance >= buildingsCost) ) 
+                throw new Exception (" You do not have enough moneyyyyy");
+                    
+            while (amountsOfBuildings > 0) {
+                int minBuildings = playerData.properties.Where(p => p.color == colorGroup).Min(p => p.buildingAmount);
+
+                List<Property> updatedProperties = new List<Property>();
+
+                foreach (var property in playerData.properties)
+                {
+
+                    if (property.color == colorGroup && propety.amountsOfBuildings == minBuildings && --amountsOfBuildings > 0)
+                    {
+                         updatedProperties.Add(new property
+                        {
+                            name = property.name,
+                                 pos = property.pos,
+                                 baseRent = property.baseRent,
+                                 oneHouse = property.oneH,
+                                 twoHouse = property.twoH,
+                                 threeHouse = property.threeH,
+                                 fourHouse = property.fourH,
+                                 hotel = property.hotel,
+                                 houseCost = property.houseCost,
+                                 hotelCost = property.hotelCost,
+                                 price = property.cost,
+                                 mortage = property.mortage,
+                                 color = property.color,
+                                 amountInGroup = property.amountInGroup,
+                                 buildingAmount = property.buildingAmount,
+                                 isMortgaged = property.isMortgaged
+                        });
+                    }
+                    else
+                    {
+                        updatedProperties.Add(proprety);
+                    }
+                }
+
+                playerData.properties = updatedProperties;
+                 playerData.balance = buildingCost;
+
+                await _dbContext.SaveChangesAsync();
+            }
+                
             }
         }
 
@@ -303,5 +298,4 @@ namespace GameLogic
             // Return if the user has the required amount of cards
             return cardsInColorGroup == ownedProps;
         }
-    }
 }
