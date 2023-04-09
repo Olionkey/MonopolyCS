@@ -393,3 +393,4 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 /.vs/MonopolyCS/FileContentIndex/5109cdc6-4519-48f9-a939-e1f5b122847c.vsidx
+/.vs/slnx.sqlite
