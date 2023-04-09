@@ -18,8 +18,8 @@ namespace GameLogic
         {
 
             var PlayerData = new PlayerData {
-                User: message.Author.Id.ToString(),
-                Guild: (message.Channel as SocketGuildChannel)?.Guild.Id.ToString(), // tries to acces the guild id from SocketGuildChannel, if it can't then it returns as null
+                User = message.Author.Id.ToString(),
+                Guild = (message.Channel as SocketGuildChannel)?.Guild.Id.ToString(), // tries to acces the guild id from SocketGuildChannel, if it can't then it returns as null
                 PlayerGameData = new PlayerGameData
                 {
                     properties = new List<property>(),
@@ -30,8 +30,8 @@ namespace GameLogic
                     TurnsInJail = 0,
                     snakeEyeCount = 0,
                     currentPos = 0
-                };
-            }
+                }
+            };
 
             _dbContext.Players.Add(playerData );
             await _dbContext.SaveChangesAsync();
