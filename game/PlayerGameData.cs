@@ -1,14 +1,14 @@
 namespace PlayerGameData
 {
-    public class playerGameData
+    public class PlayerGameData
     {
-        public List<Property> properties { get; set; }
-        public int balance { get; set; }
-        public List<string> chanceCard { get; set; }
-        public List<string> communityChest { get; set; }
-        public bool inJail { get; set; }
-        public int turnsInJail { get; set; }
-        public int snakeEyeCount { get; set; }
-        public int currentPos { get; set; }
+        public List<Property> Properties { get; set; }
+        public int Balance { get; set; }
+        public List<string> ChanceCard { get; set; }
+        public List<string> CommunityChest { get; set; }
+        public bool InJail { get; set; }
+        public int TurnsInJail { get; set; }
+        public int SnakeEyeCount { get; set; }
+        public int CurrentPos { get; set; }
     }
 }

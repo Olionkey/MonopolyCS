@@ -1,29 +1,27 @@
+using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace playerData
+namespace PlayerData
 {
-    public class playerData
+    public class PlayerData
     {
         public int ID { get; set; }
-        public string userID { get; set; }
-        public string guild { get; set; }
-        public string gameID { get; set; }
-        public string playerDataJson { get; set; }
+        public string UserID { get; set; }
+        public string Guild { get; set; }
+        public string GameID { get; set; }
+        public string PlayerDataJson { get; set; }
 
         [NotMapped]
-        public playerGameData playerGameData
+        public PlayerGameData PlayerGameData
         {
-            get => JsonConvert.DeserializeObject<playerGameData>(playerDataJson);
+            get => JsonConvert.DeserializeObject<PlayerGameData>(playerDataJson);
             set => playerDataJson = JsonConvert.SerializeObject(value);
         }
     }
 }
-
-

@@ -1,19 +1,20 @@
 using PlayerObContext;
+
 namespace GameLogic
 {
     public class GameLogic
     {
         // It's only purpose is to manage the connection to the database and providng the necessary methods
         private readonly playerObContext _dbContext;
-        private Dictionary<string, PropertyCard> propertyCards;
+        private Dictionary<string, PropertyCard> _propertyCards;
 
-        public gameLogic(playerObContext dbContext)
+        public GameLogic(playerObContext dbContext)
         {
             _dbContext = dbContext;
             loadPropertyCards();
         }
 
-        public async Task createPlayer(SocketMessage message, string gameID)
+        public async Task CreatePlayer(SocketMessage message, string gameID)
         {
 
             var PlayerData = new PlayerData {
@@ -36,13 +37,13 @@ namespace GameLogic
             await _dbContext.SaveChangesAsync();
         }
 
-        public void loadPropertyCards()
+        public void LoadPropertyCards()
         {
             string propertyCardsPath = "./game_data/propertyCards.json";
-            propertyCards = propertyClassHelper.loadPropertyCards(propertyCardsPath)
+            propertyCards = propertyClassHelper.loadPropertyCards(propertyCardsPath);
         }
 
-        public async Task<bool> setPlayerToJail(string userID, string gameID)
+        public async Task<bool> SetPlayerToJail(string userID, string gameID)
         {
             var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userID && p.gameID == gameID);
 
@@ -55,7 +56,7 @@ namespace GameLogic
             return false; ;
         }
 
-        public async Task<bool> removePlayerFromJail(string userID, string gameID)
+        public async Task<bool> RemovePlayerFromJail(string userID, string gameID)
         {
             var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userID && p.gameID == gameID);
 
@@ -68,7 +69,7 @@ namespace GameLogic
             return false;
         }
 
-        public async Task<bool> addPlayerProperty(string userID, string gameID, string propertyName)
+        public async Task<bool> AddPlayerProperty(string userID, string gameID, string propertyName)
         {
             var propertyOwner = await findPropertyOwner(gameID, propertyName);
             if (propertyOwner != null)
@@ -90,7 +91,7 @@ namespace GameLogic
             return false;
         }
 
-        public async Task<bool> removePlayerProperty(string userID, string gameID, string propertyName)
+        public async Task<bool> RemovePlayerProperty(string userID, string gameID, string propertyName)
         {
             var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userID && p.gameID);
 
@@ -104,13 +105,13 @@ namespace GameLogic
         }
         // This and findOwner can be probably be turned into one method but too lazy at the moment
         // right now this just finds who ever owns a property if there is someone that does own it
-        public async Task<PlayerData> findPropertyOwner(string gameID, string propertyName)
+        public async Task<PlayerData> FindPropertyOwner(string gameID, string propertyName)
         {
             return await _dbContext.players
                 .FirstOrDefaultAsync(p => p.gameID == gameID && p.playerGameData.properties.Any(property => property.name == propertyName));
         }
 
-        public async Task<PlayerData> movePlayer(SocketMessage message, string gameID, int move)
+        public async Task<PlayerData> MovePlayer(SocketMessage message, string gameID, int move)
         {
             var player = await _db.context.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
 
@@ -124,7 +125,7 @@ namespace GameLogic
             return player;
         }
 
-        public async Task<(PlayerData player, int index)> findOwner(string gameID, inst movePosition)
+        public async Task<(PlayerData player, int index)> FindOwner(string gameID, inst movePosition)
         {
             var gamePlayer = await _dbContext.Players
                 .Where(p => p.gameID == gameID)
@@ -146,7 +147,7 @@ namespace GameLogic
             return (null, -1);
         }
 
-        public async Task<PlayerData> addSnakeEyeCount(SocketMessage message, string gameID)
+        public async Task<PlayerData> AddSnakeEyeCount(SocketMessage message, string gameID)
         {
             var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
 
@@ -164,14 +165,14 @@ namespace GameLogic
             return player;
         }
 
-        public async Task<int> getSnakeEyeCount(SocketMessage message, string gameID)
+        public async Task<int> GetSnakeEyeCount(SocketMessage message, string gameID)
         {
             var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
             // if player is null return null, otherwise return count if that is null return 0
             return player?.playerGameData.snakeEyeCount ?? 0;
         }
 
-        public async Task<PlayerData> addMoney(string playerID, string gameID, int balance)
+        public async Task<PlayerData> AddMoney(string playerID, string gameID, int balance)
         {
             var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
 
@@ -183,8 +184,8 @@ namespace GameLogic
             return player;
         }
 
-    // TODO: add some logic if you happen to go negative and try to figure out what the best items are to mortage to stay in game and not go bankrupt
-        public async Task<(PlayerData player, int newBalance)> removeMoney(string playerID, string gameID, int balance)
+        // TODO: add some logic if you happen to go negative and try to figure out what the best items are to mortage to stay in game and not go bankrupt
+        public async Task<(PlayerData player, int newBalance)> RemoveMoney(string playerID, string gameID, int balance)
         {
             var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
 
@@ -202,21 +203,21 @@ namespace GameLogic
             return (player, 0);
         }
 
-        public async Task<int> getMoney(string playerID, string gameID)
+        public async Task<int> GetMoney(string playerID, string gameID)
         {
             var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
             return player?.playerGameData.balance ?? 0;
         }
 
         // Originally thought of letting the user return specific data regarding their data IE property, mortgaged, buildings. We should just show it all when they ask.
-        public async Task<PlayerData, properties> getPlayerInfo(Socketmessage message, string gameID)
+        public async Task<PlayerData, properties> GetPlayerInfo(Socketmessage message, string gameID)
         {
             var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.User == message.Author.Id.ToString() && p.GameID == gameID);
             var playerData = player?.PlayerGameData;
             return playerData?.Properties;
         }
 
-        public async Task restJailTurns(SocketMessage message, string gameID)
+        public async Task RestJailTurns(SocketMessage message, string gameID)
         {
             var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.User == message.Author.Id.ToString() && p.GameID == gameID);
             if (player != null)
@@ -226,7 +227,7 @@ namespace GameLogic
             }
         }
 
-        public async Task<bool> addBuildings(Socketmessage message, string gameID, string propertyName, int amountsOfBuildings)
+        public async Task<bool> AddBuildings(Socketmessage message, string gameID, string propertyName, int amountsOfBuildings)
         {
             var player = await getPlayerInfo(message, gameID);
             var propertyCards = await loadPropertyCards();
