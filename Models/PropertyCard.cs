@@ -7,7 +7,7 @@ namespace PropertyCard
         public int BaseRent { get; set; }
         public int OneHouse { get; set; }
         public int TwoHouses { get; set; }
-        public int ThreeH { get; set; }
+        public int ThreeHouses { get; set; }
         public int FourHouses { get; set; }
         public int Hotel { get; set; }
         public int HouseCost { get; set; }
