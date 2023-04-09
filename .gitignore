@@ -4,6 +4,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.vs/
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -391,3 +392,4 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/.vs/MonopolyCS/FileContentIndex/5109cdc6-4519-48f9-a939-e1f5b122847c.vsidx
