@@ -1,0 +1,77 @@
+[
+    {
+        "id": 1,
+        "description": "Advance to Go (Collect $200)"
+    },
+    {
+        "id": 2,
+        "description": "Advance to Illinois Ave.",
+        "action": "move",
+        "position": 24
+    },
+    {
+        "id": 3,
+        "description": "Advance token to nearest Utility",
+        "action": "move_nearest",
+        "group": "utility"
+    },
+    {
+        "id": 4,
+        "description": "Advance token to nearest Railroad",
+        "action": "move_nearest",
+        "group": "railroad"
+    },
+    {
+        "id": 5,
+        "description": "Advance to St. Charles Place",
+        "action": "move",
+        "position": 11
+    },
+    {
+        "id": 6,
+        "description": "Bank pays you dividend of $50",
+        "action": "add_money",
+        "value": 50
+    },
+    {
+        "id": 7,
+        "description": "Get out of jail free",
+        "action": "get_out_of_jail_free"
+    },
+    {
+        "id": 8,
+        "description": "Go back 3 spaces"
+    },
+    {
+        "id": 9,
+        "description": "Go to jail"
+    },
+    {
+        "id": 10,
+        "description": "Make general repairs on all your property"
+    },
+    {
+        "id": 11,
+        "description": "Pay poor tax of $15"
+    },
+    {
+        "id": 12,
+        "description": "Take a trip to Reading Railroad"
+    },
+    {
+        "id": 13,
+        "description": "Take a walk on the Boardwalk"
+    },
+    {
+        "id": 14,
+        "description": "You have been elected Chairman of the Board"
+    },
+    {
+        "id": 15,
+        "description": "Your building loan matures"
+    },
+    {
+        "id": 16,
+        "description": "You have won a crossword competition"
+    }
+]

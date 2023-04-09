@@ -24,7 +24,7 @@ namespace GameLogic
                 {
                     properties = new List<property>(),
                     balance = 1500,
-                    chacneCard = new List<string>(),
+                    chanceCard = new List<string>(),
                     communityChest = new List<string>(),
                     inJail = false,
                     TurnsInJail = 0,
