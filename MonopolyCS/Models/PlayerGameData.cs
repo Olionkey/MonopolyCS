@@ -1,8 +1,8 @@
-namespace PlayerGameData
+namespace MonopolyCS.Models
 {
     public class PlayerGameData
     {
-        public List<Property> Properties { get; set; }
+        public List<PropertyCard> Properties { get; set; }
         public int Balance { get; set; }
         public List<string> ChanceCard { get; set; }
         public List<string> CommunityChest { get; set; }

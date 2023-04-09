@@ -1,6 +1,6 @@
-namespace Chance
+namespace MonopolyCS
 {
-    public static class ChanceCard
+    public class ChanceCard
     {
         private List<int> _deck = new() { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 };
         private int index = 0;
@@ -10,7 +10,7 @@ namespace Chance
             //Shuffle the deck to randomize cards
         }
 
-        public static void NextCard()
+        /*public static void NextCard()
         {
             switch (index)
             {
@@ -38,6 +38,6 @@ namespace Chance
             {
                 //players.turn == true pays other players
             }
-        }
+        }*/
     }
 }

@@ -1,13 +1,13 @@
-using PlayerData;
+using Microsoft.EntityFrameworkCore;
 
-namespace PlayerObContext
+namespace MonopolyCS.DbLayer
 {
-    public class PlyaerObContext : DbContext
+    public class PlayerDbContext : DbContext
     {
         public DbSet<PlayerData> Players { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilds.UseSqlite("Data Source=./game_data/playerData.sqlite");
+            optionsBuilder.UseSqlite("Data Source=./game_data/playerData.sqlite");
         }
     }
 }

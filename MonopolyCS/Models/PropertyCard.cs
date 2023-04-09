@@ -1,4 +1,4 @@
-namespace PropertyCard
+namespace MonopolyCS.Models
 {
     public class PropertyCard
     {

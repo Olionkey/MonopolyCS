@@ -1,46 +1,50 @@
-using PlayerDbContext;
+using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
+using MonopolyCS.DbLayer;
+using MonopolyCS.Helpers;
+using MonopolyCS.Models;
 
-namespace GameLogic
+namespace MonopolyCS.AppLayer
 {
     public class GameLogic
     {
         // It's only purpose is to manage the connection to the database and providng the necessary methods
-        private readonly playerDbContext _dbContext;
-        private Dictionary<string, PropertyCard> _propertyCards;
+        private readonly PlayerDbContext _dbContext;
+        private List<PropertyCard> _propertyCards;
 
-        public GameLogic(playerDbContext dbContext)
+        public GameLogic(PlayerDbContext dbContext)
         {
             _dbContext = dbContext;
-            loadPropertyCards();
+            LoadPropertyCards();
         }
 
         public async Task CreatePlayer(SocketMessage message, string gameID)
         {
 
-            var PlayerData = new PlayerData {
-                User = message.Author.Id.ToString(),
+            PlayerData playerData = new () {
+                UserId = message.Author.Id.ToString(),
                 Guild = (message.Channel as SocketGuildChannel)?.Guild.Id.ToString(), // tries to acces the guild id from SocketGuildChannel, if it can't then it returns as null
                 PlayerGameData = new PlayerGameData
                 {
-                    properties = new List<property>(),
-                    balance = 1500,
-                    chacneCard = new List<string>(),
-                    communityChest = new List<string>(),
-                    inJail = false,
+                    Properties = new List<PropertyCard>(),
+                    Balance = 1500,
+                    ChanceCard = new List<string>(),
+                    CommunityChest = new List<string>(),
+                    InJail = false,
                     TurnsInJail = 0,
-                    snakeEyeCount = 0,
-                    currentPos = 0
+                    SnakeEyeCount = 0,
+                    CurrentPos = 0
                 }
             };
 
-            _dbContext.Players.Add(playerData );
+            _dbContext.Players.Add(playerData);
             await _dbContext.SaveChangesAsync();
         }
 
         public void LoadPropertyCards()
         {
             string propertyCardsPath = "./game_data/propertyCards.json";
-            propertyCards = propertyClassHelper.loadPropertyCards(propertyCardsPath);
+            var PropertyCards = PropertyClassHelper.LoadPropertyCards(propertyCardsPath);
         }
 
         public async Task<bool> SetPlayerToJail(string userID, string gameID)
@@ -69,21 +73,21 @@ namespace GameLogic
             return false;
         }
 
-        public async Task<bool> AddPlayerProperty(string userID, string gameID, string propertyName)
+        public async Task<bool> AddPlayerProperty(string userId, string gameId, string propertyName)
         {
-            var propertyOwner = await findPropertyOwner(gameID, propertyName);
+            PlayerData propertyOwner = await FindPropertyOwner(gameId, propertyName);
             if (propertyOwner != null)
                 return false;
 
-            var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userId && p.gameId == gameId);
+            PlayerData player = await _dbContext.Players.FirstOrDefaultAsync(p => p.UserId == userId && p.GameId == gameId);
             if (player != null)
             {
-                var propertyCard = propertyCards[propertyName];
+                PropertyCard propertyCard = _propertyCards.Where(p => p.Name == propertyName).FirstOrDefault();
 
                 if (propertyCard != null)
                 {
-                    player.playerGameData.properties.Add(propertyCard);
-                    player.playerGameData.properties.Sort((a, b) => a.pos.CompareTo(b.pos)); // This may not be added, but would like it be sorted by how it is on the map
+                    player.PlayerGameData.Properties.Add(propertyCard);
+                    player.PlayerGameData.Properties.Sort((a, b) => a.Pos.CompareTo(b.Pos)); // This may not be added, but would like it be sorted by how it is on the map
                     await _dbContext.SaveChangesAsync();
                     return true;
                 }
@@ -91,13 +95,13 @@ namespace GameLogic
             return false;
         }
 
-        public async Task<bool> RemovePlayerProperty(string userID, string gameID, string propertyName)
+        public async Task<bool> RemovePlayerProperty(string userId, string gameId, string propertyName)
         {
-            var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userID && p.gameID);
+            var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userId && p.gameID);
 
             if (player != null)
             {
-                player.playerGameData.properties.RemoveAll(propertyCards[propertyName]);
+                player.playerGameData.properties.RemoveAll(_propertyCards.Where(p => p.Name == propertyName);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
