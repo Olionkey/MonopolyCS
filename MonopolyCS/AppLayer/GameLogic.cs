@@ -97,11 +97,11 @@ namespace MonopolyCS.AppLayer
 
         public async Task<bool> RemovePlayerProperty(string userId, string gameId, string propertyName)
         {
-            var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userId && p.gameID);
+            PlayerData player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userId && p.gameID);
 
             if (player != null)
             {
-                player.playerGameData.properties.RemoveAll(_propertyCards.Where(p => p.Name == propertyName);
+                player.PlayerGameData.Properties.RemoveAll(p => p.Name == propertyName);
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -111,7 +111,7 @@ namespace MonopolyCS.AppLayer
         // right now this just finds who ever owns a property if there is someone that does own it
         public async Task<PlayerData> FindPropertyOwner(string gameID, string propertyName)
         {
-            return await _dbContext.players
+            return await _dbContext.Players
                 .FirstOrDefaultAsync(p => p.gameID == gameID && p.playerGameData.properties.Any(property => property.name == propertyName));
         }
 
@@ -129,23 +129,23 @@ namespace MonopolyCS.AppLayer
             return player;
         }
 
-        public async Task<(PlayerData player, int index)> FindOwner(string gameID, inst movePosition)
+        public async Task<(PlayerData player, int index)> FindOwner(string gameID, int movePosition)
         {
-            var gamePlayer = await _dbContext.Players
+            List<PlayerData> gamePlayers = await _dbContext.Players
                 .Where(p => p.gameID == gameID)
                 .Select(p => p.playerGameData)
                 .ToListAsync();
 
-            foreach (var currentPlayer in gamePlayers)
+            foreach (var player in gamePlayers)
             {
-                var ownProperties = currentPlayer.ownProperties;
+                var ownProperties = player.ownProperties;
 
                 foreach (var property in ownProperties)
                 {
                     int propertyIndex = propertyCards.FindIndex(card => card.name == property);
 
                     if (propertyIndex != -1 && propertyCards[propertyIndex].pos == movePostion)
-                        return (currentPlayer, propertyIndex);
+                        return (player, propertyIndex);
                 }
             }
             return (null, -1);
