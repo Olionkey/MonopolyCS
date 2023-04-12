@@ -129,6 +129,7 @@ namespace MonopolyCS.AppLayer
             return player;
         }
 
+        //The fuck is this method supposed to do? Is it moving a player to a card location?
         public async Task<(PlayerData player, int index)> FindOwner(string gameID, int movePosition)
         {
             List<PlayerData> gamePlayers = await _dbContext.Players
@@ -136,13 +137,13 @@ namespace MonopolyCS.AppLayer
                 .Select(p => p.playerGameData)
                 .ToListAsync();
 
-            foreach (var player in gamePlayers)
+            foreach (PlayerData player in gamePlayers)
             {
-                var ownProperties = player.ownProperties;
+                List<PropertyCard> ownedProperties = player.PlayerGameData.Properties;
 
-                foreach (var property in ownProperties)
+                foreach (PropertyCard property in ownedProperties)
                 {
-                    int propertyIndex = propertyCards.FindIndex(card => card.name == property);
+                    int propertyPosition = propertyCards.FindIndex(card => card.name == property);
 
                     if (propertyIndex != -1 && propertyCards[propertyIndex].pos == movePostion)
                         return (player, propertyIndex);
