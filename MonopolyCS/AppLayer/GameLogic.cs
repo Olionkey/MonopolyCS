@@ -1,5 +1,4 @@
 using Discord.WebSocket;
-using Microsoft.EntityFrameworkCore;
 using MonopolyCS.DbLayer;
 using MonopolyCS.Helpers;
 using MonopolyCS.Models;
