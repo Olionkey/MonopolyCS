@@ -1,3 +1,5 @@
+using System.Data.SQLite;
+using System.Linq;
 using Dapper;
 using Microsoft.Data.Sqlite;
 using MonopolyCS.Models;
@@ -14,16 +16,10 @@ namespace MonopolyCS.DbLayer
         
         public void Setup()
         {
-            using var connection = new SqliteConnection("Data Source=./game_data/playerData.sqlite");
- 
-            var table = connection.Query<string>("SELECT name FROM sqlite_master WHERE type='table' AND name = 'Product';");
-            var tableName = table.FirstOrDefault();
-            if (!string.IsNullOrEmpty(tableName) && tableName == "Product")
-                return;
- 
-            connection.Execute("Create Table Product (" +
-                               "Name VARCHAR(100) NOT NULL," +
-                               "Description VARCHAR(1000) NULL);");
+            if (File.Exists("MonopolyDb.sqlite")) return;
+            SQLiteConnection.CreateFile("MonopolyDb.sqlite");
+            using SqliteConnection connection = new ("Data Source=MonopolyDb.sqlite;Version=3;");
+            
         }
     }
 }

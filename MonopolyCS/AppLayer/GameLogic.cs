@@ -43,7 +43,7 @@ namespace MonopolyCS.AppLayer
         public void LoadPropertyCards()
         {
             string propertyCardsPath = "./game_data/propertyCards.json";
-            var PropertyCards = PropertyClassHelper.LoadPropertyCards(propertyCardsPath);
+            List<PropertyCard> PropertyCards = PropertyClassHelper.LoadPropertyCards(propertyCardsPath);
         }
 
         public async Task<bool> SetPlayerToJail(string userID, string gameID)
