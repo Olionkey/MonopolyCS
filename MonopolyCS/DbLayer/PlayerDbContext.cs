@@ -8,11 +8,11 @@ namespace MonopolyCS.DbLayer
 {
     public class PlayerDbContext
     {
-        public DbSet<PlayerData> Players { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlite("Data Source=./game_data/playerData.sqlite");
-        }
+        public List<PlayerData> Players { get; set; }
+        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        // {
+        //     optionsBuilder.UseSqlite("Data Source=./game_data/playerData.sqlite");
+        // }
         
         public void Setup()
         {
@@ -20,6 +20,11 @@ namespace MonopolyCS.DbLayer
             SQLiteConnection.CreateFile("MonopolyDb.sqlite");
             using SqliteConnection connection = new ("Data Source=MonopolyDb.sqlite;Version=3;");
             
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

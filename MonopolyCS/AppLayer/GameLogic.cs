@@ -40,19 +40,13 @@ namespace MonopolyCS.AppLayer
             await _dbContext.SaveChangesAsync();
         }
 
-        public void LoadPropertyCards()
+        public async Task<bool> SetPlayerToJail(string userId, string gameId)
         {
-            string propertyCardsPath = "./game_data/propertyCards.json";
-            List<PropertyCard> PropertyCards = PropertyClassHelper.LoadPropertyCards(propertyCardsPath);
-        }
-
-        public async Task<bool> SetPlayerToJail(string userID, string gameID)
-        {
-            var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userID && p.gameID == gameID);
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == userId && p.GameId == gameId);
 
             if (player != null)
             {
-                player.PlayerGameData.inJail = true;
+                player.PlayerGameData.InJail = true;
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -61,11 +55,11 @@ namespace MonopolyCS.AppLayer
 
         public async Task<bool> RemovePlayerFromJail(string userID, string gameID)
         {
-            var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userID && p.gameID == gameID);
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == userID && p.GameId == gameID);
 
             if (player != null)
             {
-                player.PlayerGameData.inJail = false;
+                player.PlayerGameData.InJail = false;
                 await _dbContext.SaveChangesAsync();
                 return true;
             }
@@ -78,7 +72,7 @@ namespace MonopolyCS.AppLayer
             if (propertyOwner != null)
                 return false;
 
-            PlayerData player = await _dbContext.Players.FirstOrDefaultAsync(p => p.UserId == userId && p.GameId == gameId);
+            PlayerData player = _dbContext.Players.FirstOrDefault(p => p.UserId == userId && p.GameId == gameId);
             if (player != null)
             {
                 PropertyCard propertyCard = _propertyCards.Where(p => p.Name == propertyName).FirstOrDefault();
@@ -96,7 +90,7 @@ namespace MonopolyCS.AppLayer
 
         public async Task<bool> RemovePlayerProperty(string userId, string gameId, string propertyName)
         {
-            PlayerData player = await _dbContext.Players.FirstOrDefaultAsync(p => p.userID == userId && p.gameID);
+            PlayerData player = _dbContext.Players.FirstOrDefault(p => p.UserId == userId && p.GameID);
 
             if (player != null)
             {
@@ -110,33 +104,31 @@ namespace MonopolyCS.AppLayer
         // right now this just finds who ever owns a property if there is someone that does own it
         public async Task<PlayerData> FindPropertyOwner(string gameID, string propertyName)
         {
-            return await _dbContext.Players
-                .FirstOrDefaultAsync(p => p.gameID == gameID && p.playerGameData.properties.Any(property => property.name == propertyName));
+            return _dbContext.Players
+                .FirstOrDefault(p => p.GameId == gameID && p.PlayerGameData.Properties.Any(property => property.Name == propertyName));
         }
 
-        public async Task<PlayerData> MovePlayer(SocketMessage message, string gameID, int move)
+        public async Task<PlayerData> MovePlayer(SocketMessage message, string gameId, int move)
         {
-            var player = await _db.context.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == message.Author.Id.ToString() && p.GameID == gameId);
 
-            if (player != null)
-            {
-                int newPos = player.playerGameData.currentPos + move;
-                player.PlayerGameData.currentPos = (newPos <= 40 && newPos > 0) ? newPos : (newPos < 0) ? newPos + 40 : newPos - 40;
-                await _dbContext.SaveChangesAsync();
-            }
+            if (player == null) return player;
+            int newPos = player.PlayerGameData.CurrentPos + move;
+            player.PlayerGameData.CurrentPos = (newPos <= 40 && newPos > 0) ? newPos : (newPos < 0) ? newPos + 40 : newPos - 40;
+            await _dbContext.SaveChangesAsync();
 
             return player;
         }
 
         //The fuck is this method supposed to do? Is it moving a player to a card location?
-        public async Task<(PlayerData player, int index)> FindOwner(string gameID, int movePosition)
+        public async Task<(PlayerData player, int index)> FindOwner(string gameId, int movePosition)
         {
-            List<PlayerData> gamePlayers = await _dbContext.Players
-                .Where(p => p.gameID == gameID)
-                .Select(p => p.playerGameData)
-                .ToListAsync();
+            List<PlayerGameData> gamePlayers = _dbContext.Players
+                .Where(p => p.GameID == gameId)
+                .Select(p => p.PlayerGameData)
+                .ToList();
 
-            foreach (PlayerData player in gamePlayers)
+            foreach (PlayerGameData player in gamePlayers)
             {
                 List<PropertyCard> ownedProperties = player.PlayerGameData.Properties;
 
@@ -151,90 +143,86 @@ namespace MonopolyCS.AppLayer
             return (null, -1);
         }
 
-        public async Task<PlayerData> AddSnakeEyeCount(SocketMessage message, string gameID)
+        public async Task<PlayerData> AddSnakeEyeCount(SocketMessage message, string gameId)
         {
-            var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == message.Author.Id.ToString() && p.GameId == gameId);
 
-            if (player != null)
+            if (player == null) return player ?? new PlayerData(); //TODO: handle this logic better. Shouldn't return new Player()
+            player.PlayerGameData.SnakeEyeCount++;
+            // it should never even get above 3 but just in case
+            if (player.PlayerGameData.SnakeEyeCount >= 3)
             {
-                player.playerGameData.snakeEyeCount++;
-                // it should never even get above 3 but just in case
-                if (player.playerGameData.snakeEyeCount >= 3)
-                {
-                    player.playerGameData.snakeEyeCount = 0;
-                    await setPlayerToJail(message);
-                }
-                await _dbContext.SaveChangesAsync();
+                player.PlayerGameData.SnakeEyeCount = 0;
+                await SetPlayerToJail(message.Author.Id.ToString(), gameId);
             }
+            await _dbContext.SaveChangesAsync();
             return player;
         }
 
-        public async Task<int> GetSnakeEyeCount(SocketMessage message, string gameID)
+        public async Task<int> GetSnakeEyeCount(SocketMessage message, string gameId)
         {
-            var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == message.Author.Id.ToString() && p.GameId == gameId);
             // if player is null return null, otherwise return count if that is null return 0
-            return player?.playerGameData.snakeEyeCount ?? 0;
+            return player?.PlayerGameData.SnakeEyeCount ?? 0;
         }
 
-        public async Task<PlayerData> AddMoney(string playerID, string gameID, int balance)
+        public async Task<PlayerData> AddMoney(string playerId, string gameId, int balance)
         {
-            var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == playerId && p.GameId == gameId);
 
-            if (player != null)
-            {
-                player.playerGameData.balance += balance;
-                await _dbContext.SaveChangesAsync();
-            }
+            if (player == null) return player ?? new PlayerData(); //TODO: handle this logic better. Shouldn't return new Player()
+            player.PlayerGameData.Balance += balance;
+            await _dbContext.SaveChangesAsync();
             return player;
         }
 
         // TODO: add some logic if you happen to go negative and try to figure out what the best items are to mortage to stay in game and not go bankrupt
-        public async Task<(PlayerData player, int newBalance)> RemoveMoney(string playerID, string gameID, int balance)
+        public async Task<(PlayerData player, int newBalance)> RemoveMoney(string playerId, string gameId, int balance)
         {
-            var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == playerId && p.GameId == gameId);
 
             if (player != null)
             {
-                int newBalance = player.playerGameData.balance - balance;
+                int newBalance = player.PlayerGameData.Balance - balance;
                 if (newBalance < 0)
                 {
                     return (player, newBalance);
                 }
 
-                player.playerGameData.balance = newBalance;
+                player.PlayerGameData.Balance = newBalance;
                 await _dbContext.SaveChangesAsync();
             }
             return (player, 0);
         }
 
-        public async Task<int> GetMoney(string playerID, string gameID)
+        public async Task<int> GetMoney(string playerId, string gameId)
         {
-            var player = await _dbContext.players.FirstOrDefaultAsync(p => p.user == message.Author.Id.ToString() && p.gameID == gameID);
-            return player?.playerGameData.balance ?? 0;
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == playerId && p.GameId == gameId);
+            return player?.PlayerGameData.Balance ?? 0;
         }
 
         // Originally thought of letting the user return specific data regarding their data IE property, mortgaged, buildings. We should just show it all when they ask.
-        public async Task<PlayerData, properties> GetPlayerInfo(Socketmessage message, string gameID)
+        public async Task<List<PropertyCard>> GetPlayerInfo(SocketMessage message, string gameId)
         {
-            var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.User == message.Author.Id.ToString() && p.GameID == gameID);
-            var playerData = player?.PlayerGameData;
-            return playerData?.Properties;
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == message.Author.Id.ToString() && p.GameID == gameId);
+            PlayerGameData? playerData = player?.PlayerGameData;
+            return playerData?.Properties ?? new List<PropertyCard>(); //TODO: handle this return more betterer
         }
 
-        public async Task RestJailTurns(SocketMessage message, string gameID)
+        public async Task RestJailTurns(SocketMessage message, string gameId)
         {
-            var player = await _dbContext.Players.FirstOrDefaultAsync(p => p.User == message.Author.Id.ToString() && p.GameID == gameID);
+            var player = _dbContext.Players.FirstOrDefault(p => p.UserId == message.Author.Id.ToString() && p.GameID == gameId);
             if (player != null)
             {
-                player.playerGameData.turnsInJail = 0;
+                player.PlayerGameData.TurnsInJail = 0;
                 await _dbContext.SaveChangesAsync();
             }
         }
 
-        public async Task<bool> AddBuildings(Socketmessage message, string gameID, string propertyName, int amountsOfBuildings)
+        public async Task<bool> AddBuildings(SocketMessage message, string gameId, string propertyName, int buildingAmount)
         {
-            var player = await getPlayerInfo(message, gameID);
-            var propertyCards = await loadPropertyCards();
+            var player = await GetPlayerInfo(message, gameId);
+            var propertyCards = LoadPropertyCards();
             var propertyCard = propertyCards.FirstOrDefault(pc => pc.name.ToLower() == propertyName.ToLower());
 
             string colorGroup = propertyCard.color;
@@ -244,12 +232,12 @@ namespace MonopolyCS.AppLayer
             if (!ownsAllColorGroup(colorGroup, playerData.properties ))
                 throw new Exception(" You do not own all properties in the color group.");
                 
-            int buildingCost = houseCost * amountsOfBuildings;
+            int buildingCost = houseCost * buildingAmount;
 
             if ( !(playerData.balance >= buildingsCost) ) 
                 throw new Exception (" You do not have enough moneyyyyy");
                     
-            while (amountsOfBuildings > 0) {
+            while (buildingAmount > 0) {
                 int minBuildings = playerData.properties.Where(p => p.color == colorGroup).Min(p => p.buildingAmount);
 
                 List<Property> updatedProperties = new List<Property>();
@@ -257,7 +245,7 @@ namespace MonopolyCS.AppLayer
                 foreach (var property in playerData.properties)
                 {
 
-                    if (property.color == colorGroup && propety.amountsOfBuildings == minBuildings && --amountsOfBuildings > 0)
+                    if (property.color == colorGroup && propety.amountsOfBuildings == minBuildings && --buildingAmount > 0)
                     {
                          updatedProperties.Add(new property
                         {

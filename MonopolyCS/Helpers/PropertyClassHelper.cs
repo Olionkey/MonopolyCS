@@ -5,9 +5,9 @@ namespace MonopolyCS.Helpers
 {
     public static class PropertyClassHelper
     {
-        public static List<PropertyCard> LoadPropertyCards(string filepath)
+        public static IEnumerable<PropertyCard> LoadPropertyCards(string filepath)
         {
-            string jsonContent = File.ReadAllText("./game_data/propertyCards.json");
+            string jsonContent = File.ReadAllText(@"MonopolyCs/Data/propertyCards.json");
             List<PropertyCard> propertyCards = JsonConvert.DeserializeObject<List<PropertyCard>>(jsonContent);
             return propertyCards;
         }

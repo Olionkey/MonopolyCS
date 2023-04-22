@@ -2,5 +2,5 @@ namespace MonopolyCS.DbLayer;
 
 public class QueryBuilder : IQueryBuilder
 {
-    public string CreatePlayer
+    public string CreatePlayer { get; set; }
 }
