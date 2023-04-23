@@ -3,6 +3,7 @@ using MonopolyCS.DbLayer;
 using MonopolyCS.Helpers;
 using MonopolyCS.Models;
 
+
 namespace MonopolyCS.AppLayer
 {
     public class GameLogic
@@ -14,7 +15,7 @@ namespace MonopolyCS.AppLayer
         public GameLogic(PlayerDbContext dbContext)
         {
             _dbContext = dbContext;
-            LoadPropertyCards();
+            _propertyCards = PropertyClassHelper.LoadPropertyCards(propertyCardsPath, cm);
         }
 
         public async Task CreatePlayer(SocketMessage message, string gameID)
@@ -90,15 +91,12 @@ namespace MonopolyCS.AppLayer
 
         public async Task<bool> RemovePlayerProperty(string userId, string gameId, string propertyName)
         {
-            PlayerData player = _dbContext.Players.FirstOrDefault(p => p.UserId == userId && p.GameID);
+            PlayerData player = _dbContext.Players.FirstOrDefault(p => p.UserId == userId && p.GameId == gameId);
 
-            if (player != null)
-            {
-                player.PlayerGameData.Properties.RemoveAll(p => p.Name == propertyName);
-                await _dbContext.SaveChangesAsync();
-                return true;
-            }
-            return false;
+            if (player == null) return false;
+            player.PlayerGameData.Properties.RemoveAll(p => p.Name == propertyName);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
         // This and findOwner can be probably be turned into one method but too lazy at the moment
         // right now this just finds who ever owns a property if there is someone that does own it
@@ -123,20 +121,15 @@ namespace MonopolyCS.AppLayer
         //The fuck is this method supposed to do? Is it moving a player to a card location?
         public async Task<(PlayerData player, int index)> FindOwner(string gameId, int movePosition)
         {
-            List<PlayerGameData> gamePlayers = _dbContext.Players
-                .Where(p => p.GameID == gameId)
-                .Select(p => p.PlayerGameData)
-                .ToList();
-
-            foreach (PlayerGameData player in gamePlayers)
+            foreach (PlayerData player in _dbContext.Players)
             {
                 List<PropertyCard> ownedProperties = player.PlayerGameData.Properties;
 
                 foreach (PropertyCard property in ownedProperties)
                 {
-                    int propertyPosition = propertyCards.FindIndex(card => card.name == property);
+                    int propertyIndex = _propertyCards.FindIndex(card => card.Name == property.Name);
 
-                    if (propertyIndex != -1 && propertyCards[propertyIndex].pos == movePostion)
+                    if (propertyIndex != -1 && _propertyCards[propertyIndex].Pos == movePosition)
                         return (player, propertyIndex);
                 }
             }
@@ -202,16 +195,15 @@ namespace MonopolyCS.AppLayer
         }
 
         // Originally thought of letting the user return specific data regarding their data IE property, mortgaged, buildings. We should just show it all when they ask.
-        public async Task<List<PropertyCard>> GetPlayerInfo(SocketMessage message, string gameId)
+        private Task<PlayerGameData> GetPlayerInfo(SocketMessage message, string gameId)
         {
             PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == message.Author.Id.ToString() && p.GameID == gameId);
-            PlayerGameData? playerData = player?.PlayerGameData;
-            return playerData?.Properties ?? new List<PropertyCard>(); //TODO: handle this return more betterer
+            return Task.FromResult(player.PlayerGameData);
         }
 
         public async Task RestJailTurns(SocketMessage message, string gameId)
         {
-            var player = _dbContext.Players.FirstOrDefault(p => p.UserId == message.Author.Id.ToString() && p.GameID == gameId);
+            PlayerData? player = _dbContext.Players.FirstOrDefault(p => p.UserId == message.Author.Id.ToString() && p.GameID == gameId);
             if (player != null)
             {
                 player.PlayerGameData.TurnsInJail = 0;
@@ -219,30 +211,30 @@ namespace MonopolyCS.AppLayer
             }
         }
 
+        //TODO: needs logic to handle max building amounts as well as the 'level' building rule (a property cannot have more than +/- 1 house difference)
         public async Task<bool> AddBuildings(SocketMessage message, string gameId, string propertyName, int buildingAmount)
         {
-            var player = await GetPlayerInfo(message, gameId);
-            var propertyCards = LoadPropertyCards();
-            var propertyCard = propertyCards.FirstOrDefault(pc => pc.name.ToLower() == propertyName.ToLower());
+            PlayerGameData playerGameData = await GetPlayerInfo(message, gameId);
+            PropertyCard? propertyCard = _propertyCards.FirstOrDefault(pc => string.Equals(pc.Name, propertyName, StringComparison.CurrentCultureIgnoreCase));
 
-            string colorGroup = propertyCard.color;
-            int houseCout = propertyCard.houseCost;
-            int hotelCost = propertyCard.hotelCost;
+            string colorGroup = propertyCard.Color;
+            int houseCost = propertyCard.HouseCost;
+            int hotelCost = propertyCard.HotelCost;
 
-            if (!ownsAllColorGroup(colorGroup, playerData.properties ))
+            if (!OwnsAllColorGroup(colorGroup, playerGameData))
                 throw new Exception(" You do not own all properties in the color group.");
                 
-            int buildingCost = houseCost * buildingAmount;
+            int buildingCost = houseCost * buildingAmount;  //TODO: needs to be conditional on how many houses are being built
 
-            if ( !(playerData.balance >= buildingsCost) ) 
-                throw new Exception (" You do not have enough moneyyyyy");
+            if ( !(playerGameData.Balance >= buildingCost) ) 
+                throw new Exception (" You do not have enough money");
                     
             while (buildingAmount > 0) {
-                int minBuildings = playerData.properties.Where(p => p.color == colorGroup).Min(p => p.buildingAmount);
+                int minBuildings = PlayerData.PlayerGameData.Properties.Where(p => p.Color == colorGroup).Min(p => p.BuildingAmount);
 
                 List<Property> updatedProperties = new List<Property>();
 
-                foreach (var property in playerData.properties)
+                foreach (var property in PlayerData.properties)
                 {
 
                     if (property.color == colorGroup && propety.amountsOfBuildings == minBuildings && --buildingAmount > 0)
@@ -273,16 +265,14 @@ namespace MonopolyCS.AppLayer
                     }
                 }
 
-                playerData.properties = updatedProperties;
-                 playerData.balance = buildingCost;
+                PlayerData.properties = updatedProperties;
+                PlayerData.balance = buildingCost;
 
                 await _dbContext.SaveChangesAsync();
             }
-                
-            }
         }
 
-        private bool OwnsAllColorGroup(string colorGroup, List<Property> properties)
+        private bool OwnsAllColorGroup(string colorGroup, PlayerGameData properties)
         {
             int cardsInColorGroup;
             int ownedProps = playerProperties.Count(p => p.Color == color);
